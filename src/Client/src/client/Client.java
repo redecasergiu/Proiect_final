@@ -92,7 +92,6 @@ public class Client {
             MainW mw;
             while (true) {
                 ri = (SimplestInstruction) in.readObject(); //received instruction
-                System.out.println(ri.getCmd());
                 switch (ri.getCmd()) {
                     case "SUBMITCREDENTIALS":
                         Object[] credentials = getCredentials();
@@ -226,7 +225,6 @@ public class Client {
     
     /**
      * Store a file
-     *
      * @param tf
      * @throws FileNotFoundException
      */

@@ -16,7 +16,9 @@ create table users(
 -- a friend request adds an entry in this table
 create table friends(
 	userid int(6),
-	friendid int(6)
+	friendid int(6),
+	foreign key (userid) references users(id),
+	foreign key (friendid) references friends(id)
 );
 
 
@@ -32,7 +34,7 @@ create table messages(
 	conversationid int(6) not null,
 	userid int(6) not null,	-- id of the sender
 	content varchar(8192) not null -- message content
-	-- isread boolean default false -- true if the 
+	
 );
 
 
@@ -246,6 +248,8 @@ begin
 		(_conversationid, @participantid);
 	end if;
 	
+	select @participantid as 'participantid'; 
+	
 end //
 delimiter ;
 
@@ -289,6 +293,7 @@ begin
 	
 end //
 delimiter ;
+
 
 
 

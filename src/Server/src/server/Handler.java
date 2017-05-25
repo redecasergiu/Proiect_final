@@ -142,7 +142,7 @@ class Handler extends Thread {
                 recordMessage(ri);
                 break;
             case "STOREFILE":   //the user sends a file to server
-                storeFile((TransferFile)ri);
+                storeFile((TransferFile) ri);
                 break;
             case "GETFILE": //the user requests a file
                 sendFile(ri);
@@ -165,7 +165,14 @@ class Handler extends Thread {
                 UpdateParticipantsList<String> upl = (UpdateParticipantsList<String>) ri;
                 convId = upl.getConversationId();
                 for (String p : upl.getParticipants()) { //get the new participants
-                    dbAddParticipant(convId, p);
+                    id = dbAddParticipant(convId, p);
+                    for (Handler h : hs) {
+                        if (h.getUid() == id) {
+                            int idd = h.getUid();
+                            UpdateConversationList cvs = new UpdateConversationList(dbGetConversations(idd));
+                            h.out.writeObject(cvs);
+                        }
+                    }
                 }
                 out.writeObject(new UpdateParticipantsList<>(convId, dbGetParticipants(convId)));
                 break;
@@ -244,7 +251,7 @@ class Handler extends Thread {
         for (int i = 0; i < listOfFiles.length; i++) {
             File f = listOfFiles[i];
             if (f.isFile()) {
-                if (f.getName().substring(0,90).equals(token)){
+                if (f.getName().substring(0, 90).equals(token)) {
                     try {
                         Path path = Paths.get(f.getAbsolutePath());
                         byte[] content;

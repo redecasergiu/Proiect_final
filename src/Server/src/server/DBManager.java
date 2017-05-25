@@ -219,15 +219,21 @@ public class DBManager {
      *
      * @param conversationId id of the conversation
      * @param participantName name of the participant
-     * @return the conversation
+     * @return addedParticipandID
      * @throws SQLException
-     */
-    protected static void dbAddParticipant(int conversationId, String participantName) throws SQLException {
+     */    
+    protected static int dbAddParticipant(int conversationId, String participantName) throws SQLException {
         try (CallableStatement stmt = conn.prepareCall("call addParticipant(?,?);")) {
             stmt.setInt(1, conversationId);
             stmt.setString(2, participantName);
-            stmt.executeQuery();
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("participantid");
+                    
+                }
+            }
         }
+        return -1;
     }
 
     /**
