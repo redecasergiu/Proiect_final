@@ -2,6 +2,7 @@ package gui;
 
 import client.Client;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -26,12 +27,40 @@ public abstract class Window extends javax.swing.JFrame {
         this.children.add(cw);
     }
     
-    public void setList(List<String> myList, JList<String> jList){
+    
+    /**
+     * Set a JList object values 
+     * 
+     * @param jList
+     * @param myList 
+     */
+    public void setJList(JList<String> jList, List<String> myList){
         DefaultListModel<String> model = new DefaultListModel<>();
         for (String i : myList) {
             model.addElement(i);
         }
         jList.setModel(model);
+        
+        /**
+         * Alternative: {@code List<String> places = new JList<String>(names)} ;
+         */
+    }
+    
+    /**
+     * Get the JList values
+     * @param jList
+     */
+    public List<String> getJList(JList<String> jList){
+        return  Arrays.asList(jList.getModel().toString());
+    }
+    
+    
+    /**
+     * Get the JList selected values
+     * @param jList
+     */
+    public List<String> getSelectedJList(JList<String> jList){
+        return jList.getSelectedValuesList();
     }
 
     /**
@@ -49,11 +78,11 @@ public abstract class Window extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 864, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 433, Short.MAX_VALUE)
         );
 
         pack();

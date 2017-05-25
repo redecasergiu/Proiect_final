@@ -48,8 +48,11 @@ public class MainW extends Window {
         jScrollPane1 = new javax.swing.JScrollPane();
         jFs = new javax.swing.JList<>();
         jLabel1 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jFName = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jScrollPane2.setViewportView(jCs);
 
@@ -78,29 +81,31 @@ public class MainW extends Window {
             .addGroup(jCLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(18, 18, 18)
-                .addGroup(jCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jCLayout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jNewC, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jOpenC, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
-                    .addComponent(jCName)
-                    .addComponent(jSeparator1))
-                .addContainerGap())
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jCLayout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jNewC, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jOpenC, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
+                            .addComponent(jCName)
+                            .addComponent(jSeparator1)))
+                    .addComponent(jLabel2))
+                .addGap(24, 24, 24))
         );
         jCLayout.setVerticalGroup(
             jCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jCLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3))
+                .addComponent(jLabel2)
                 .addGap(12, 12, 12)
                 .addGroup(jCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
                     .addGroup(jCLayout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(12, 12, 12)
                         .addComponent(jCName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -108,16 +113,22 @@ public class MainW extends Window {
                         .addComponent(jNewC)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jOpenC)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
-        jAddF.setText("Add friend");
+        jAddF.setText("AddContact");
+        jAddF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jAddFActionPerformed(evt);
+            }
+        });
 
         jScrollPane1.setViewportView(jFs);
 
-        jLabel1.setText("Friends");
+        jLabel1.setText("Contacts");
+
+        jLabel4.setText("Contact name");
 
         javax.swing.GroupLayout jFLayout = new javax.swing.GroupLayout(jF);
         jF.setLayout(jFLayout);
@@ -129,7 +140,10 @@ public class MainW extends Window {
                     .addGroup(jFLayout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jAddF, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jFLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jFName, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jAddF, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jLabel1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -140,8 +154,12 @@ public class MainW extends Window {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jFLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE)
                     .addGroup(jFLayout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jFName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jAddF)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -198,6 +216,10 @@ public class MainW extends Window {
             Window.c.getMessages(convId);
         }
     }//GEN-LAST:event_jOpenCActionPerformed
+
+    private void jAddFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jAddFActionPerformed
+        Window.c.addContact(jFName.getText());
+    }//GEN-LAST:event_jAddFActionPerformed
 
     public void updateConversations(List<Conversation> cl) {
         this.conversations = cl;
@@ -268,7 +290,14 @@ public class MainW extends Window {
         if (cws.containsKey(convId))
             cws.get(convId).initConversation(msgs);
     }
+    
+    public void refreshContacts(List<String> contacts){
+        setJList(jFs, contacts);
+    }
 
+    public List<String> getSelectedFriends(){
+        return getSelectedJList(jFs);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jAddF;
@@ -276,10 +305,12 @@ public class MainW extends Window {
     private javax.swing.JTextField jCName;
     private javax.swing.JList<String> jCs;
     private javax.swing.JPanel jF;
+    private javax.swing.JTextField jFName;
     private javax.swing.JList<String> jFs;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JButton jNewC;
     private javax.swing.JButton jOpenC;
     private javax.swing.JScrollPane jScrollPane1;

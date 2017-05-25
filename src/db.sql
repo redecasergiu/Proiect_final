@@ -11,7 +11,7 @@ create table users(
 );
 
 
--- friends table
+-- contacts old:friends table
 -- a,b are friends iff friends(a,b) and friends(b,a)
 -- a friend request adds an entry in this table
 create table friends(
@@ -241,8 +241,10 @@ begin
 	from users
 	where users.name = _participantname;
 
-	insert into permissions(conversationid, userid) values
-	(_conversationid, @participantid);
+	if @participantid is not null then
+		insert into permissions(conversationid, userid) values
+		(_conversationid, @participantid);
+	end if;
 	
 end //
 delimiter ;
@@ -259,6 +261,46 @@ begin
 	select userid as 'userid'
 	from permissions
 	where permissions.conversationid = _conversationid; -- and permissions.r = true;
+	
+end //
+delimiter ;
+
+
+
+-- add a user to contacts
+-- RETURN: list of contacts of the requestor
+drop procedure if exists addContact;
+delimiter //
+create procedure addContact(_requestorId int(6), _contactName varchar(100))
+begin
+
+    set @contactId = null;
+
+	select id into @contactId
+	from users
+	where users.name = _contactName;
+	
+	if @contactId is not null then
+		insert into friends(userid, friendid) values
+		(_requestorId, @contactId);
+	end if;
+	
+	call getContacts(_requestorId);
+	
+end //
+delimiter ;
+
+
+
+-- RETURN: list of contacts of the requestor
+drop procedure if exists getContacts;
+delimiter //
+create procedure getContacts(_requestorId int(6))
+begin
+
+	select users.name as 'username'
+	from users, friends
+	where friends.userid = _requestorId and friends.friendid = users.id;
 	
 end //
 delimiter ;

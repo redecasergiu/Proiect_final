@@ -2,11 +2,16 @@ package gui;
 
 import cmd.obj.Conversation;
 import cmd.obj.Message;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 
 public class ConversationW extends Window {
 
@@ -33,6 +38,9 @@ public class ConversationW extends Window {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jFileChooser1 = new javax.swing.JFileChooser();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         jP = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPs = new javax.swing.JList<>();
@@ -47,14 +55,23 @@ public class ConversationW extends Window {
         jMs = new javax.swing.JTextArea();
         jSend = new javax.swing.JButton();
         jMessage = new javax.swing.JTextField();
+        jSendF = new javax.swing.JButton();
+        jGetF = new javax.swing.JButton();
+        jFToken = new javax.swing.JTextField();
+        jSeparator2 = new javax.swing.JSeparator();
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane3.setViewportView(jTextArea1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         jScrollPane1.setViewportView(jPs);
 
         jLabel1.setText("Participants");
 
-        jAddP.setText("Add participant");
+        jAddP.setText("Add participants");
         jAddP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jAddPActionPerformed(evt);
@@ -114,6 +131,24 @@ public class ConversationW extends Window {
             }
         });
 
+        jSendF.setText("Send File");
+        jSendF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jSendFActionPerformed(evt);
+            }
+        });
+
+        jGetF.setText("Get File");
+        jGetF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jGetFActionPerformed(evt);
+            }
+        });
+
+        jFToken.setText("<insert file token>");
+
+        jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
+
         javax.swing.GroupLayout jMLayout = new javax.swing.GroupLayout(jM);
         jM.setLayout(jMLayout);
         jMLayout.setHorizontalGroup(
@@ -121,11 +156,19 @@ public class ConversationW extends Window {
             .addGroup(jMLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jMLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2)
                     .addGroup(jMLayout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
                     .addGroup(jMLayout.createSequentialGroup()
+                        .addComponent(jFToken, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jGetF)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSendF))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jMLayout.createSequentialGroup()
                         .addComponent(jMessage)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jSend)))
@@ -137,12 +180,25 @@ public class ConversationW extends Window {
                 .addContainerGap()
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jMLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jMessage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jSend))
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jMLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jMLayout.createSequentialGroup()
+                        .addGroup(jMLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jSendF)
+                            .addComponent(jFToken, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jMLayout.createSequentialGroup()
+                        .addGroup(jMLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jMLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jGetF))
+                            .addComponent(jSeparator2))
+                        .addGap(33, 33, 33))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -160,10 +216,11 @@ public class ConversationW extends Window {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jM, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jM, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         pack();
@@ -185,15 +242,38 @@ public class ConversationW extends Window {
         try {
             List<String> np = new ArrayList<>();   //the new participants
             np.add(this.jParticipant.getText());
+            np.addAll(mw.getSelectedFriends());
             mw.addParticipants(this.conversationId, np);
         } catch (IOException ex) {
             Logger.getLogger(ConversationW.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jAddPActionPerformed
 
+    private void jSendFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSendFActionPerformed
+        try {
+            JFileChooser fc = new JFileChooser();
+            fc.setDialogTitle("Pick a file");
+            fc.showOpenDialog(null);
+            File f = fc.getSelectedFile();
+            Path path = Paths.get(f.getAbsolutePath());
+            byte[] content = Files.readAllBytes(path);
+            Window.c.transferFile(this.conversationId, f, content);
+        } catch (IOException ex) {
+            //Logger.getLogger(ConversationW.class.getName()).log(Level.SEVERE, null, ex);
+            //System.out.println(ex.getMessage());
+        }
+    }//GEN-LAST:event_jSendFActionPerformed
+
+    private void jGetFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jGetFActionPerformed
+        Window.c.getFile(jFToken.getText());
+    }//GEN-LAST:event_jGetFActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jAddP;
+    private javax.swing.JTextField jFToken;
+    private javax.swing.JFileChooser jFileChooser1;
+    private javax.swing.JButton jGetF;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -205,8 +285,12 @@ public class ConversationW extends Window {
     private javax.swing.JList<String> jPs;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JButton jSend;
+    private javax.swing.JButton jSendF;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -218,7 +302,7 @@ public class ConversationW extends Window {
     }
     
     protected void updateParticipants(List<String> participants){
-        setList(participants, jPs);
+        setJList(jPs, participants);
     }
     
     @Override

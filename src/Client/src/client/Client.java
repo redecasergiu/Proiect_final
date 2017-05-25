@@ -4,6 +4,7 @@ import cmd.cs.CreateConversation;
 import cmd.cs.Credentials;
 import cmd.cs.RecordMessage;
 import cmd.general.SimplestInstruction;
+import cmd.general.TransferFile;
 import cmd.general.UpdateParticipantsList;
 import cmd.obj.Message;
 import cmd.sc.AccessCard;
@@ -12,11 +13,14 @@ import cmd.sc.UpdateMessages;
 import cmd.sc.UpdateConversationList;
 import gui.MainW;
 import gui.Window;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Arrays;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +30,8 @@ public class Client {
 
     private static final String SERVERADDRESS = "localhost";
     private static final int PORT = 9001;
+    private static final String FILES_FOLDER = "./_files/";
+    protected static final int TKLEN = 90;  //the length of the token of the transferred file
 
     private ObjectInputStream in;
     private ObjectOutputStream out;
@@ -86,6 +92,7 @@ public class Client {
             MainW mw;
             while (true) {
                 ri = (SimplestInstruction) in.readObject(); //received instruction
+                System.out.println(ri.getCmd());
                 switch (ri.getCmd()) {
                     case "SUBMITCREDENTIALS":
                         Object[] credentials = getCredentials();
@@ -104,6 +111,16 @@ public class Client {
                         mw = (MainW) w;
                         mw.receiveMessages(gm.getConversationId(), gm.getMessages());
                         break;
+                    case "REFRESHCONTACTS":
+                        List<String> contacts = (List<String>)ri.getParam();
+                        mw = (MainW) w;
+                        mw.refreshContacts(contacts);
+                        break;
+                    case "STOREFILE":
+                    case "RETRIEVEFILE":
+                    case "GETFILE":
+                        storeFile((TransferFile)ri);
+                        break;
                     case "UPDATECONVERSATIONLIST":
                         UpdateConversationList ucs = (UpdateConversationList) ri;                         
                         mw = (MainW) w;
@@ -114,7 +131,7 @@ public class Client {
                         mw = (MainW) w;
                         mw.updateMessages(um.getConversationId(), um.getUserName()+": "+um.getLastMessage()+"\n");
                         break;
-                    case "UPDATECONVERSATION":
+                    case "UPDATECONVERSATION": //not userd
                         System.out.println("UPDATECONVERSATION");
                         break;
                     case "UPDATEPARTICIPANTSLIST":
@@ -136,7 +153,7 @@ public class Client {
     }
 
     @Deprecated
-    public void sendMessage(int conversationId, String message) throws IOException {
+    public void sendMessage(int conversationId, String message) throws IOException  {
         out.writeObject(new RecordMessage(conversationId, message));
     }
 
@@ -165,6 +182,58 @@ public class Client {
             out.writeObject(new SimplestInstruction("GETMESSAGES", conversationId));
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void addContact(String name){
+        try {
+            out.writeObject(new SimplestInstruction("ADDCONTACT", name) );
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void requestContacts(String name){
+        try {
+            out.writeObject(new SimplestInstruction("GETCONTACTS", name) );
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
+    /**
+     * Send file to server
+     * @param convId
+     * @param f
+     * @param content 
+     */
+    public void transferFile(int convId, File f, byte[] content){
+        try {
+            out.writeObject(new TransferFile(convId, f, content,true) );
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void getFile(String token){
+        try {
+            out.writeObject(new SimplestInstruction("GETFILE", token));
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
+     * Store a file
+     *
+     * @param tf
+     * @throws FileNotFoundException
+     */
+    private void storeFile(TransferFile tf) throws FileNotFoundException, SQLException, IOException {
+        String filePath = FILES_FOLDER + tf.getFileName().substring(TKLEN);
+        try (FileOutputStream fos = new FileOutputStream(filePath)) {   //store the file
+            fos.write(tf.getContent());
         }
     }
 }

@@ -3,20 +3,17 @@ package server;
 import cmd.obj.Conversation;
 import cmd.obj.Message;
 import java.security.MessageDigest;
-import java.security.SecureRandom;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import static server.Server.conn;
 
 public class DBManager {
 
-    private static final Random RANDOM = new SecureRandom();
 
     /**
      * @param base input string
@@ -27,7 +24,7 @@ public class DBManager {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(base.getBytes("UTF-8"));
-            StringBuffer hexString = new StringBuffer();
+            StringBuilder hexString = new StringBuilder();
 
             for (int i = 0; i < hash.length; i++) {
                 String hex = Integer.toHexString(0xff & hash[i]);
@@ -61,24 +58,6 @@ public class DBManager {
         }
     }
 
-    /**
-     * @param length string length
-     * @return a random string
-     */
-    private static String genRandStr(int length) {
-        String letters = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890";
-        String pw = "";
-        for (int i = 0; i < length; i++) {
-            int index = (int) (RANDOM.nextDouble() * letters.length());
-            pw += letters.substring(index, index + 1);
-        }
-        return pw;
-    }
-
-    //Do not edit
-    protected static String genRandStr() {
-        return genRandStr(Handler.TKLEN);
-    }
 
     /**
      * @param user username
@@ -86,7 +65,7 @@ public class DBManager {
      * @return user id (from the db) or -1 if the username already exists
      */
     protected static int dbRegister(String user, String pass) throws SQLException {
-        String salt = genRandStr(256);
+        String salt = Handler.genRandStr(256);
         String hpass = sha256(pass + salt);
         try (CallableStatement stmt = conn.prepareCall("select registerUser(?,?,?) as 'id';")) {
             stmt.setString(1, user);
@@ -271,5 +250,50 @@ public class DBManager {
         }
         return res;
     }
+    
+    
+    /**
+     * Add a contact to the contactlist if the contact exists in the database.
+     *
+     * @param requestorId
+     * @param name name of the wanted contact
+     * @return the contacts of the requestor
+     * @throws SQLException
+     */
+    protected static List<String> dbAddContact(int requestorId, String name) throws SQLException {
+        List<String> res = new ArrayList<>();
+        try (CallableStatement stmt = conn.prepareCall("call addContact(?,?);")) {
+            stmt.setInt(1, requestorId);
+            stmt.setString(2, name);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String username = rs.getString("username");
+                    res.add(username);
+                }
+            }
+        }
+        return res;
+    }
 
+    
+    /**
+     * Add a contact to the contactlist if the contact exists in the database.
+     *
+     * @param requestorId
+     * @return the contacts of the requestor
+     * @throws SQLException
+     */
+    protected static List<String> dbGetContacts(int requestorId) throws SQLException {
+        List<String> res = new ArrayList<>();
+        try (CallableStatement stmt = conn.prepareCall("call getContacts(?);")) {
+            stmt.setInt(1, requestorId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String username = rs.getString("username");
+                    res.add(username);
+                }
+            }
+        }
+        return res;
+    }
 }
